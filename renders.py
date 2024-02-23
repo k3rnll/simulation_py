@@ -1,5 +1,4 @@
 import entities
-import map
 
 
 def clear_display():
@@ -9,10 +8,12 @@ def clear_display():
 def render_map(field):
     clear_display()
     frame = ""
+    position = entities.Position(0, 0)
     for y in range(field.height):
         for x in range(field.width):
-            entity = field.get_entity(entities.Position(x, y))
-            # print(entity)
+            position.x = x
+            position.y = y
+            entity = field.get_entity(position)
             if entity is None:
                 frame += '_'
             else:
