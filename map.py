@@ -18,7 +18,7 @@ class Map:
             if new_entity is creatures.Creature:
                 new_entity.field = self
             return True
-        else:
+        elif is_randomly:
             x = random.randrange(0, self.width)
             y = random.randrange(0, self.height)
             new_entity.position.x = x
@@ -35,3 +35,9 @@ class Map:
             if point.x == position.x and point.y == position.y:
                 return self.entities[point]
         return None
+
+    def delete_entity(self, position):
+        for point in self.entities.keys():
+            if point.x == position.x and point.y == position.y:
+                del self.entities[point]
+                return True

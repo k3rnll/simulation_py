@@ -71,4 +71,4 @@ class Creature(entities.Entity):
 class Predator(Creature):
     def __init__(self, position, field):
         super().__init__(position, field)
-        self.icon = 'P'
+        self.icon = '*'

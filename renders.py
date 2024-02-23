@@ -14,7 +14,7 @@ def render_map(field):
             entity = field.get_entity(entities.Position(x, y))
             # print(entity)
             if entity is None:
-                frame += '_'
+                frame += ' '
             else:
                 frame += entity.icon
         frame += '\n'
