@@ -1,7 +1,5 @@
 import random
-
 import entities
-import map
 
 
 class Creature(entities.Entity):
@@ -65,7 +63,6 @@ class Creature(entities.Entity):
         commands = ["up", "down", "left", "right", "up_right", "up_left", "down_right", "down_left"]
         x = random.randrange(0, len(commands))
         self.make_move(commands[x])
-
 
 
 class Predator(Creature):
