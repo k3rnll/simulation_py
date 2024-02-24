@@ -3,8 +3,9 @@ import entities
 
 
 class Simulation:
-    # map, predators, herbivores, rocks, trees, grass
-    def __init__(self, field, predators=1):
+    # View, Map, creature.Predator, herbivores, rocks, trees, grass
+    def __init__(self, display, field, predators=1):
+        self._display = display
         self.field = field
         self.predators = predators
         self._put_predators()
@@ -16,5 +17,5 @@ class Simulation:
     def spin_the_world(self):
         for entity in self.field.entities.values():
             if issubclass(entity.__class__, creatures.Creature):
-                # print(entity)
                 entity.make_random_move()
+                self._display.print_frame()
