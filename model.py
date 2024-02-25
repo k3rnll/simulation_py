@@ -9,15 +9,16 @@ class Model:
         self.width = width
         self.entities = {}
 
-    def add_entity(self, new_entity, is_randomly=False):
-        # if (not is_randomly and
-        #         0 <= new_entity.position.x < self.width and
-        #         0 <= new_entity.position.y < self.height and
-        #         self.get_entity(new_entity.position) is None):
-        #     self.entities[new_entity.position] = new_entity
-        #     if issubclass(new_entity.__class__, creatures.Creature):
-        #         new_entity.field = self
-        #     return True
+    def add_entity(self, new_entity, position=None, is_randomly=False):
+        if (not is_randomly and
+                0 <= position.x < self.width and
+                0 <= position.y < self.height and
+                self.get_entity(position) is None):
+            new_entity.set_position(position)
+            self.entities[position] = new_entity
+            if issubclass(new_entity.__class__, creatures.Creature):
+                new_entity.set_model(self)
+            return True
         if is_randomly:
             x = random.randrange(0, self.width)
             y = random.randrange(0, self.height)
