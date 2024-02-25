@@ -39,17 +39,20 @@ class IMovable(metaclass=ABCMeta):
 
 class Creature(entities.Entity, IMovable):
     @abstractmethod
-    def __init__(self, position=None, icon=None, field=None):
+    def __init__(self, position=None, icon=None):
         super().__init__(position, icon)
         self._hp = 100
-        self._field = field
+        self._model = None
+
+    def set_model(self, to_model):
+        self._model = to_model
 
     def _move_up(self):
         if self._position.y > 0:
             self._position.y -= 1
 
     def _move_down(self):
-        if self._position.y < self._field.height - 1:
+        if self._position.y < self._model.height - 1:
             self._position.y += 1
 
     def _move_left(self):
@@ -57,7 +60,7 @@ class Creature(entities.Entity, IMovable):
             self._position.x -= 1
 
     def _move_right(self):
-        if self._position.x < self._field.width - 1:
+        if self._position.x < self._model.width - 1:
             self._position.x += 1
 
     def _move_up_right(self):
@@ -120,17 +123,17 @@ class Creature(entities.Entity, IMovable):
                 if x != 0 or y != 0:
                     seen_position.x = self._position.x + x
                     seen_position.y = self._position.y + y
-                    box = self._field.get_entity(seen_position)
+                    box = self._model.get_entity(seen_position)
                     if box:
                         seen_entities.append(box)
         return seen_entities
 
 
 class Predator(Creature):
-    def __init__(self, position=None, field=None):
-        super().__init__(position, 'P', field)
+    def __init__(self, position=None):
+        super().__init__(position, 'P')
 
 
 class Herbivore(Creature):
-    def __init__(self, position=None, field=None):
-        super().__init__(position, 'H', field)
+    def __init__(self, position=None):
+        super().__init__(position, 'H')

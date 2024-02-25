@@ -1,28 +1,12 @@
 import time
-
-import creatures
-import entities
-import map
-import renders
-import simulation
+import controller
 
 
 def main():
-    grid = map.Map(30, 30)
-    display = renders.View(grid, is_debug=True)
-    # my_simulation = simulation.Simulation(display, map1, 0, 0)
-    predator1 = creatures.Predator()
-    predator2 = creatures.Predator()
-    predator3 = creatures.Predator()
-    print(predator1.__dict__)
-    # map1.add_entity(predator1)
-    # map1.add_entity(predator2)
-    # map1.add_entity(predator3)
-    # while 1:
-    #     my_simulation.spin_the_world()
-    #     print("hello")
-    #     print(predator2.get_vision_circle_border_set())
-    #     time.sleep(0.5)
+    simulation = controller.Controller(150)
+    while 1:
+        simulation.spin_the_world()
+        time.sleep(0.1)
 
 
 if __name__ == "__main__":
