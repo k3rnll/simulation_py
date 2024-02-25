@@ -64,8 +64,39 @@ class Creature(entities.Entity):
         x = random.randrange(0, len(commands))
         self.make_move(commands[x])
 
+    def get_vision_circle_border_set(self):
+        points = []
+        vision_distance = 3
+        for x in range(vision_distance * -1, vision_distance + 1):
+            points.append(entities.Position(self.position.x + x, self.position.y + vision_distance * -1))
+            points.append(entities.Position(self.position.x + x, self.position.y + vision_distance))
+        for y in range(vision_distance * -1 + 1, vision_distance):
+            points.append(entities.Position(self.position.x + vision_distance * -1, self.position.y + y))
+            points.append(entities.Position(self.position.x + vision_distance, self.position.y + y))
+        return points
+
+    def get_closest_entities_set(self):
+        seen_entities = []
+        vision_distance = 5
+        seen_position = entities.Position(0, 0)
+        for y in range(vision_distance * -1, vision_distance + 1):
+            for x in range(vision_distance * -1, vision_distance + 1):
+                if x != 0 or y != 0:
+                    seen_position.x = self.position.x + x
+                    seen_position.y = self.position.y + y
+                    box = self.field.get_entity(seen_position)
+                    if box:
+                        seen_entities.append(box)
+        return seen_entities
+
 
 class Predator(Creature):
     def __init__(self, position, field):
         super().__init__(position, field)
         self.icon = 'P'
+
+
+class Herbivore(Creature):
+    def __init__(self, position, field):
+        super().__init__(position, field)
+        self.icon = 'H'

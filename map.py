@@ -1,5 +1,6 @@
 import random
 import creatures
+import entities
 
 
 class Map:
@@ -14,7 +15,7 @@ class Map:
                 0 <= new_entity.position.y < self.height and
                 self.get_entity(new_entity.position) is None):
             self.entities[new_entity.position] = new_entity
-            if new_entity is creatures.Creature:
+            if issubclass(new_entity.__class__, creatures.Creature):
                 new_entity.field = self
             return True
         else:
@@ -24,7 +25,7 @@ class Map:
             new_entity.position.y = y
             if self.get_entity(new_entity.position) is None:
                 self.entities[new_entity.position] = new_entity
-                if new_entity is creatures.Creature:
+                if issubclass(new_entity.__class__, creatures.Creature):
                     new_entity.field = self
                 return True
             return False
