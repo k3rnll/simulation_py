@@ -1,28 +1,64 @@
+from abc import ABCMeta, abstractmethod
 import random
 import entities
 
 
-class Creature(entities.Entity):
-    def __init__(self, position, field):
-        super().__init__(position)
-        self.hp = 100
-        self.field = field
+class IMovable(metaclass=ABCMeta):
+    @abstractmethod
+    def _move_up(self):
+        pass
+
+    @abstractmethod
+    def _move_down(self):
+        pass
+
+    @abstractmethod
+    def _move_left(self):
+        pass
+
+    @abstractmethod
+    def _move_right(self):
+        pass
+
+    @abstractmethod
+    def _move_up_left(self):
+        pass
+
+    @abstractmethod
+    def _move_up_right(self):
+        pass
+
+    @abstractmethod
+    def _move_down_left(self):
+        pass
+
+    @abstractmethod
+    def _move_down_right(self):
+        pass
+
+
+class Creature(entities.Entity, IMovable):
+    @abstractmethod
+    def __init__(self, position=None, icon=None, field=None):
+        super().__init__(position, icon)
+        self._hp = 100
+        self._field = field
 
     def _move_up(self):
-        if self.position.y > 0:
-            self.position.y -= 1
+        if self._position.y > 0:
+            self._position.y -= 1
 
     def _move_down(self):
-        if self.position.y < self.field.height - 1:
-            self.position.y += 1
+        if self._position.y < self._field.height - 1:
+            self._position.y += 1
 
     def _move_left(self):
-        if self.position.x > 0:
-            self.position.x -= 1
+        if self._position.x > 0:
+            self._position.x -= 1
 
     def _move_right(self):
-        if self.position.x < self.field.width - 1:
-            self.position.x += 1
+        if self._position.x < self._field.width - 1:
+            self._position.x += 1
 
     def _move_up_right(self):
         self._move_up()
@@ -68,11 +104,11 @@ class Creature(entities.Entity):
         points = []
         vision_distance = 3
         for x in range(vision_distance * -1, vision_distance + 1):
-            points.append(entities.Position(self.position.x + x, self.position.y + vision_distance * -1))
-            points.append(entities.Position(self.position.x + x, self.position.y + vision_distance))
+            points.append(entities.Position(self._position.x + x, self._position.y + vision_distance * -1))
+            points.append(entities.Position(self._position.x + x, self._position.y + vision_distance))
         for y in range(vision_distance * -1 + 1, vision_distance):
-            points.append(entities.Position(self.position.x + vision_distance * -1, self.position.y + y))
-            points.append(entities.Position(self.position.x + vision_distance, self.position.y + y))
+            points.append(entities.Position(self._position.x + vision_distance * -1, self._position.y + y))
+            points.append(entities.Position(self._position.x + vision_distance, self._position.y + y))
         return points
 
     def get_closest_entities_set(self):
@@ -82,21 +118,19 @@ class Creature(entities.Entity):
         for y in range(vision_distance * -1, vision_distance + 1):
             for x in range(vision_distance * -1, vision_distance + 1):
                 if x != 0 or y != 0:
-                    seen_position.x = self.position.x + x
-                    seen_position.y = self.position.y + y
-                    box = self.field.get_entity(seen_position)
+                    seen_position.x = self._position.x + x
+                    seen_position.y = self._position.y + y
+                    box = self._field.get_entity(seen_position)
                     if box:
                         seen_entities.append(box)
         return seen_entities
 
 
 class Predator(Creature):
-    def __init__(self, position, field):
-        super().__init__(position, field)
-        self.icon = 'P'
+    def __init__(self, position=None, field=None):
+        super().__init__(position, 'P', field)
 
 
 class Herbivore(Creature):
-    def __init__(self, position, field):
-        super().__init__(position, field)
-        self.icon = 'H'
+    def __init__(self, position=None, field=None):
+        super().__init__(position, 'H', field)
