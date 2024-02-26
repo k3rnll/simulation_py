@@ -15,16 +15,16 @@ class Controller:
         self._put_entities_on_map()
 
     def _put_entities_on_map(self):
-        self._model.add_entity(self.bob, entities.Position(5, 4), is_randomly=False)
-        self._model.add_entity(creatures.Predator(), entities.Position(8, 5), is_randomly=False)
-        self._model.add_entity(creatures.Predator(), entities.Position(8, 4), is_randomly=False)
-        self._model.add_entity(creatures.Predator(), entities.Position(8, 6), is_randomly=False)
-        self._model.add_entity(creatures.Herbivore(), entities.Position(10, 7), is_randomly=False)
-        self._model.add_entity(creatures.Herbivore(), entities.Position(10, 6), is_randomly=False)
-        self._model.add_entity(creatures.Herbivore(), entities.Position(10, 5), is_randomly=False)
+        self._model.add_entity_manually(self.bob, entities.Position(5, 4))
+        self._model.add_entity_manually(creatures.Predator(), entities.Position(8, 5))
+        self._model.add_entity_manually(creatures.Predator(), entities.Position(8, 4))
+        self._model.add_entity_manually(creatures.Predator(), entities.Position(8, 6))
+        self._model.add_entity_manually(creatures.Herbivore(), entities.Position(10, 7))
+        self._model.add_entity_manually(creatures.Herbivore(), entities.Position(10, 6))
+        self._model.add_entity_manually(creatures.Herbivore(), entities.Position(10, 5))
 
         for i in range(self._predators):
-            self._model.add_entity(creatures.Predator(), is_randomly=True)
+            self._model.add_entity_randomly(creatures.Predator())
 
     def spin_the_world(self):
         # pass
