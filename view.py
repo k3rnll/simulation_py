@@ -1,4 +1,5 @@
 import entities
+import model
 
 
 def _get_clear_display_str():
@@ -6,8 +7,8 @@ def _get_clear_display_str():
 
 
 class View:
-    def __init__(self, model, controller, is_debug=True):
-        self._model = model
+    def __init__(self, data_model: model.Model, controller, is_debug=True):
+        self._model = data_model
         self._controller = controller
         self._is_debug = is_debug
         self._empty_box_icon = '_'
@@ -26,7 +27,7 @@ class View:
                     frame += entity.get_icon()
             frame += '\n'
         if self._is_debug:
-            frame += f"\nentities: {len(self._model.entities.items())}"
+            frame += f"\nentities: {len(self._model.entities_on_grid.items())}"
         return frame
 
     def print_frame(self):
