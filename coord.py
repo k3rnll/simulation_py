@@ -40,3 +40,9 @@ def get_points_of_vector(from_point: entities.Position, to_point: entities.Posit
             p_y += shift_y
         vector_points_list.append(entities.Position(p_x, p_y))
     return vector_points_list
+
+
+def calc_distance_to_point(from_point: entities.Position, to_point: entities.Position):
+    x = abs(from_point.x - to_point.x)
+    y = abs(from_point.y - to_point.y)
+    return (x * x + y * y) ** 0.5

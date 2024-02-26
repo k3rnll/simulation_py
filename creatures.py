@@ -48,7 +48,7 @@ class IVision:
         self.__entities_in_sight = []
 
     @property
-    def entities_in_sight(self) -> []:
+    def entities_in_sight(self):
         self.__look_around()
         return self.__entities_in_sight
 
@@ -60,7 +60,7 @@ class IVision:
             if entity:
                 self.__entities_in_sight.append(entity)
 
-    def __look_by_vector(self, to_point):
+    def __look_by_vector(self, to_point: entities.Position):
         vector_points = coord.get_points_of_vector(self.__creature.get_position(), to_point)
         for point in vector_points:
             entity = self.__creature.get_model().get_entity(point)
@@ -143,10 +143,32 @@ class Creature(entities.Entity, IMovable, IVision):
         x = random.randrange(0, len(commands))
         self.make_move(commands[x])
 
-    def get_nearest_target(self, target: entities.Entity):
+    def get_nearest_target(self, target: type):
         entities_in_sight = self.vision.entities_in_sight
-        x = self.position.x
-        y = self.position.y
+        closest_target = None
+        if entities_in_sight:
+            distance = 10000
+            for ent in entities_in_sight:
+                if isinstance(ent, target):
+                    cur_dist = coord.calc_distance_to_point(self.get_position(), ent.get_position())
+                    if cur_dist < distance:
+                        distance = cur_dist
+                        closest_target = ent
+        return closest_target
+
+    def get_step_to_target(self, target: entities.Entity):
+        vector_points = coord.get_points_of_vector(self.get_position(), target.get_position())
+        return vector_points[0]
+
+    def make_move_to_nearest_target(self, target: type):
+        closest_target = self.get_nearest_target(target)
+        if closest_target:
+            point_to_step = self.get_step_to_target(closest_target)
+            if self._model.get_entity(point_to_step) is None:
+                self.get_position().x = point_to_step.x
+                self.get_position().y = point_to_step.y
+        else:
+            self.make_random_move()
 
 
 

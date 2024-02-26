@@ -23,8 +23,8 @@ class Controller:
         self._model.add_entity_manually(creatures.Herbivore(), entities.Position(10, 6))
         self._model.add_entity_manually(creatures.Herbivore(), entities.Position(10, 5))
 
-        self._model.add_entity_manually(entities.Tree(), entities.Position(10, 10))
-        self._model.add_entity_manually(entities.Tree(), entities.Position(10, 11))
+        # self._model.add_entity_manually(entities.Tree(), entities.Position(10, 10))
+        # self._model.add_entity_manually(entities.Tree(), entities.Position(10, 11))
         self._model.add_entity_manually(entities.Tree(), entities.Position(10, 12))
 
         for i in range(self._predators):
@@ -37,5 +37,7 @@ class Controller:
         #         entity.make_random_move()
         self._view.print_frame()
         print(f"bob see: {len(self.bob.vision.entities_in_sight)} objects")
-        self.bob.make_move("down")
+        print(f"nearest target: {self.bob.get_nearest_target(entities.Tree)}")
+        # self.bob.make_move("down")
+        self.bob.make_move_to_nearest_target(entities.Tree)
 
