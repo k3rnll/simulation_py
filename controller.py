@@ -23,6 +23,10 @@ class Controller:
         self._model.add_entity_manually(creatures.Herbivore(), entities.Position(10, 6))
         self._model.add_entity_manually(creatures.Herbivore(), entities.Position(10, 5))
 
+        self._model.add_entity_manually(entities.Tree(), entities.Position(10, 10))
+        self._model.add_entity_manually(entities.Tree(), entities.Position(10, 11))
+        self._model.add_entity_manually(entities.Tree(), entities.Position(10, 12))
+
         for i in range(self._predators):
             self._model.add_entity_randomly(creatures.Predator())
 
@@ -32,7 +36,6 @@ class Controller:
         #     if issubclass(entity.__class__, creatures.Creature):
         #         entity.make_random_move()
         self._view.print_frame()
-        self.bob.vision.look_around()
-        print(f"bob see: {len(self.bob.vision.get_entities_in_sight())} herbivores")
+        print(f"bob see: {len(self.bob.vision.entities_in_sight)} objects")
         self.bob.make_move("down")
 

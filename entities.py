@@ -13,6 +13,10 @@ class Entity(metaclass=ABCMeta):
         self._position = position
         self._icon = icon
 
+    @property
+    def position(self):
+        return self._position
+
     def set_position(self, position: Position):
         self._position = position
 
