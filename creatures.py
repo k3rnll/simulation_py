@@ -1,8 +1,9 @@
 from abc import ABCMeta, abstractmethod
-import random
 
-import coord
 import entities
+from entities import Tree, Grass, Rock, Position, Entity
+import random
+import coord
 
 
 class IMovable(metaclass=ABCMeta):
@@ -39,47 +40,51 @@ class IMovable(metaclass=ABCMeta):
         pass
 
 
-class IVision:
-    def __init__(self, creature, distance=5):
-        self.__creature = creature
-        self.__distance = distance
-        self.__looking_for_obj_types = (Herbivore, entities.Tree)
-        self.__can_see_through_obj_types = (entities.Grass,)
-        self.__entities_in_sight = []
+# class Vision:
+#     def __init__(self, owner: Creature, distance=5):
+#         self.__owner = owner
+#         self.__model = owner.model
+#         self.__distance = distance
+#         self.__looking_for_obj_types = can_see_objs
+#         self.__can_see_through_obj_types = (Grass,)
+#         self.__entities_in_sight = []
+#
+#     @property
+#     def entities_in_sight(self):
+#         self.__look_around()
+#         return self.__entities_in_sight
+#
+#     def __look_around(self):
+#         self.__entities_in_sight.clear()
+#         view_border_points = coord.get_points_list_of_borderline(self.__creature.get_position(), self.__distance)
+#         for point in view_border_points:
+#             entity = self.__look_by_vector(point)
+#             if entity:
+#                 self.__entities_in_sight.append(entity)
+#
+#     def __look_by_vector(self, to_point: Position):
+#         vector_points = coord.get_points_of_vector(self.__creature.get_position(), to_point)
+#         for point in vector_points:
+#             entity = self.__creature.get_model().get_entity(point)
+#             if isinstance(entity, self.__looking_for_obj_types) and entity not in self.__entities_in_sight:
+#                 return self.__creature.get_model().get_entity(point)
+#             elif not entity or isinstance(entity, self.__can_see_through_obj_types):
+#                 continue
+#             else:
+#                 break
+#         return None
 
-    @property
-    def entities_in_sight(self):
-        self.__look_around()
-        return self.__entities_in_sight
 
-    def __look_around(self):
-        self.__entities_in_sight.clear()
-        view_border_points = coord.get_points_list_of_borderline(self.__creature.get_position(), self.__distance)
-        for point in view_border_points:
-            entity = self.__look_by_vector(point)
-            if entity:
-                self.__entities_in_sight.append(entity)
-
-    def __look_by_vector(self, to_point: entities.Position):
-        vector_points = coord.get_points_of_vector(self.__creature.get_position(), to_point)
-        for point in vector_points:
-            entity = self.__creature.get_model().get_entity(point)
-            if isinstance(entity, self.__looking_for_obj_types) and entity not in self.__entities_in_sight:
-                return self.__creature.get_model().get_entity(point)
-            elif not entity or isinstance(entity, self.__can_see_through_obj_types):
-                continue
-            else:
-                break
-        return None
-
-
-class Creature(entities.Entity, IMovable, IVision):
-    @abstractmethod
+class Creature(Entity, IMovable):
     def __init__(self, position=None, icon=None):
         super().__init__(position, icon)
         self._hp = 100
         self._model = None
-        self.vision = IVision(self)
+        self.vision = Vision(self)
+
+    @property
+    def model(self):
+        return self._model
 
     def set_model(self, to_model):
         self._model = to_model
@@ -156,7 +161,7 @@ class Creature(entities.Entity, IMovable, IVision):
                         closest_target = ent
         return closest_target
 
-    def get_step_to_target(self, target: entities.Entity):
+    def get_step_to_target(self, target: Entity):
         vector_points = coord.get_points_of_vector(self.get_position(), target.get_position())
         return vector_points[0]
 
@@ -171,6 +176,36 @@ class Creature(entities.Entity, IMovable, IVision):
             self.make_random_move()
 
 
+class Vision:
+    def __init__(self, owner: Creature, distance=5):
+        self.__owner = owner
+        self.__distance = distance
+        self.__solid_obj_types = entities.Entity
+        self.__entities_in_sight = set()
+
+    @property
+    def entities_in_sight(self):
+        if self.__owner.model:
+            self.__look_around()
+        return self.__entities_in_sight
+
+    def __look_around(self):
+        self.__entities_in_sight.clear()
+        vision_border_points_list = coord.get_points_list_of_borderline(self.__owner.position, self.__distance)
+        for point in vision_border_points_list:
+            vision_vector = coord.get_points_of_vector(self.__owner.position, point)
+            objs_on_vector = self.__get_objs_on_view_vector(vision_vector)
+            self.__entities_in_sight = self.__entities_in_sight.union(objs_on_vector)
+
+    def __get_objs_on_view_vector(self, vector):
+        seen_objs = set()
+        for point in vector:
+            obj = self.__owner.model.get_entity(point)
+            if obj:
+                seen_objs.add(obj)
+            if isinstance(obj, self.__solid_obj_types):
+                return seen_objs
+        return seen_objs
 
 
 class Predator(Creature):
