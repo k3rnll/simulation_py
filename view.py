@@ -1,3 +1,4 @@
+import creatures
 import entities
 import model
 
@@ -13,6 +14,13 @@ class View:
         self._is_debug = is_debug
         self._empty_box_icon = ' '
 
+    def __debug_info(self) -> str:
+        entities_list = self._model.entities_on_grid
+        info_string = (f"\nentities:\t{len(entities_list())}\n"
+                       f"predators:\t{len(self._model.entities_on_grid(creatures.Predator))}\n"
+                       f"herbivores:\t{len(self._model.entities_on_grid(creatures.Herbivore))}")
+        return info_string
+
     def _render_map(self):
         frame = ""
         position = entities.Position(0, 0)
@@ -27,7 +35,7 @@ class View:
                     frame += entity.icon
             frame += '\n'
         if self._is_debug:
-            frame += f"\nentities: {len(self._model.entities_on_grid.items())}"
+            frame += self.__debug_info()
         return frame
 
     def print_frame(self):

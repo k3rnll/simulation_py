@@ -17,9 +17,12 @@ class Model:
     def width(self):
         return self.__width
 
-    @property
-    def entities_on_grid(self):
-        return self.__entities
+    def entities_on_grid(self, spec_type=entities.Entity):
+        entities_list = []
+        for obj in self.__entities.values():
+            if isinstance(obj, spec_type):
+                entities_list.append(obj)
+        return entities_list
 
     def is_valid_point(self, point: entities.Position):
         return 0 <= point.x < self.__width and 0 <= point.y < self.height

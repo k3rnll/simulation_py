@@ -52,9 +52,6 @@ class Creature(entities.Entity, IMovable):
     def set_model(self, to_model):
         self._model = to_model
 
-    def get_model(self):
-        return self._model
-
     def _move_up(self):
         new_point = entities.Position(self.position.x, self.position.y - 1)
         self.model.update_entity_position(self, new_point)
