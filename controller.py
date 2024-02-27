@@ -5,39 +5,29 @@ import view
 
 
 class Controller:
-    def __init__(self, predators=0, herbivores=0):
-        self._model = model.Model(15, 30)
-        self._view = view.View(self._model, self)
+    def __init__(self, predators=0, herbivores=0, trees=0, rocks=0):
+        self._model = model.Model(30, 60)
+        self._view = view.View(self._model, self, False)
         self._predators = predators
         self._herbivores = herbivores
-        self.bob = creatures.Predator()
-        self.bob._icon = "B"
+        self._trees = trees
+        self._rocks = rocks
         self._put_entities_on_map()
 
     def _put_entities_on_map(self):
-        self._model.add_entity_manually(self.bob, entities.Position(5, 4))
-        self._model.add_entity_manually(creatures.Predator(), entities.Position(8, 5))
-        self._model.add_entity_manually(creatures.Predator(), entities.Position(8, 4))
-        self._model.add_entity_manually(creatures.Predator(), entities.Position(8, 6))
-        self._model.add_entity_manually(creatures.Herbivore(), entities.Position(10, 7))
-        self._model.add_entity_manually(creatures.Herbivore(), entities.Position(10, 6))
-        self._model.add_entity_manually(creatures.Herbivore(), entities.Position(10, 5))
-
-        # self._model.add_entity_manually(entities.Tree(), entities.Position(10, 10))
-        # self._model.add_entity_manually(entities.Tree(), entities.Position(10, 11))
-        self._model.add_entity_manually(entities.Tree(), entities.Position(10, 12))
-
         for i in range(self._predators):
             self._model.add_entity_randomly(creatures.Predator())
+        for i in range(self._herbivores):
+            self._model.add_entity_randomly(creatures.Herbivore())
+        for i in range(self._trees):
+            self._model.add_entity_randomly(entities.Tree())
+        for i in range(self._rocks):
+            self._model.add_entity_randomly(entities.Rock())
 
     def spin_the_world(self):
-        # pass
-        # for entity in self._model.entities.values():
-        #     if issubclass(entity.__class__, creatures.Creature):
-        #         entity.make_random_move()
+        for entity in self._model.entities_on_grid.values():
+            if isinstance(entity, creatures.Predator):
+                entity.make_move_to_nearest_target(creatures.Herbivore)
+            if isinstance(entity, creatures.Herbivore):
+                entity.make_random_move()
         self._view.print_frame()
-        print(f"bob see: {len(self.bob.vision.entities_in_sight)} objects")
-        print(f"nearest target: {self.bob.get_nearest_target(entities.Tree)}")
-        # self.bob.make_move("down")
-        self.bob.make_move_to_nearest_target(entities.Tree)
-

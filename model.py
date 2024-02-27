@@ -21,17 +21,22 @@ class Model:
     def entities_on_grid(self):
         return self.__entities
 
-    def __is_point_correct(self, point: entities.Position):
+    def is_valid_point(self, point: entities.Position):
         return 0 <= point.x < self.__width and 0 <= point.y < self.height
 
+    @classmethod
+    def __update_entity_position(cls, entity: entities.Entity, new_point: entities.Position):
+        entity.position.x = new_point.x
+        entity.position.y = new_point.y
+
     def __put_entity_on_grid(self, new_entity, position_to: entities.Position):
-        new_entity.set_position(position_to)
-        self.__entities[position_to] = new_entity
+        self.__update_entity_position(new_entity, position_to)
+        self.__entities[new_entity.position] = new_entity
         if issubclass(new_entity.__class__, creatures.Creature):
             new_entity.set_model(self)
 
     def add_entity_manually(self, new_entity, position_to: entities.Position):
-        if self.__is_point_correct(position_to) and self.get_entity(position_to) is None:
+        if self.is_valid_point(position_to) and self.get_entity(position_to) is None:
             self.__put_entity_on_grid(new_entity, position_to)
             return True
         return False
@@ -50,3 +55,12 @@ class Model:
             if point.x == position.x and point.y == position.y:
                 return self.__entities[point]
         return None
+
+    def update_entity_position(self, entity: entities.Entity, new_point: entities.Position):
+        if (entity in self.__entities.values() and
+                self.is_valid_point(new_point) and
+                self.get_entity(new_point) is None):
+            entity.position.x = new_point.x
+            entity.position.y = new_point.y
+            return True
+        return False

@@ -1,7 +1,5 @@
 from abc import ABCMeta, abstractmethod
-
 import entities
-from entities import Tree, Grass, Rock, Position, Entity
 import random
 import coord
 
@@ -40,42 +38,7 @@ class IMovable(metaclass=ABCMeta):
         pass
 
 
-# class Vision:
-#     def __init__(self, owner: Creature, distance=5):
-#         self.__owner = owner
-#         self.__model = owner.model
-#         self.__distance = distance
-#         self.__looking_for_obj_types = can_see_objs
-#         self.__can_see_through_obj_types = (Grass,)
-#         self.__entities_in_sight = []
-#
-#     @property
-#     def entities_in_sight(self):
-#         self.__look_around()
-#         return self.__entities_in_sight
-#
-#     def __look_around(self):
-#         self.__entities_in_sight.clear()
-#         view_border_points = coord.get_points_list_of_borderline(self.__creature.get_position(), self.__distance)
-#         for point in view_border_points:
-#             entity = self.__look_by_vector(point)
-#             if entity:
-#                 self.__entities_in_sight.append(entity)
-#
-#     def __look_by_vector(self, to_point: Position):
-#         vector_points = coord.get_points_of_vector(self.__creature.get_position(), to_point)
-#         for point in vector_points:
-#             entity = self.__creature.get_model().get_entity(point)
-#             if isinstance(entity, self.__looking_for_obj_types) and entity not in self.__entities_in_sight:
-#                 return self.__creature.get_model().get_entity(point)
-#             elif not entity or isinstance(entity, self.__can_see_through_obj_types):
-#                 continue
-#             else:
-#                 break
-#         return None
-
-
-class Creature(Entity, IMovable):
+class Creature(entities.Entity, IMovable):
     def __init__(self, position=None, icon=None):
         super().__init__(position, icon)
         self._hp = 100
@@ -93,20 +56,20 @@ class Creature(Entity, IMovable):
         return self._model
 
     def _move_up(self):
-        if self._position.y > 0:
-            self._position.y -= 1
+        new_point = entities.Position(self.position.x, self.position.y - 1)
+        self.model.update_entity_position(self, new_point)
 
     def _move_down(self):
-        if self._position.y < self._model.height - 1:
-            self._position.y += 1
+        new_point = entities.Position(self.position.x, self.position.y + 1)
+        self.model.update_entity_position(self, new_point)
 
     def _move_left(self):
-        if self._position.x > 0:
-            self._position.x -= 1
+        new_point = entities.Position(self.position.x - 1, self.position.y)
+        self.model.update_entity_position(self, new_point)
 
     def _move_right(self):
-        if self._position.x < self._model.width - 1:
-            self._position.x += 1
+        new_point = entities.Position(self.position.x + 1, self.position.y)
+        self.model.update_entity_position(self, new_point)
 
     def _move_up_right(self):
         self._move_up()
@@ -155,29 +118,27 @@ class Creature(Entity, IMovable):
             distance = 10000
             for ent in entities_in_sight:
                 if isinstance(ent, target):
-                    cur_dist = coord.calc_distance_to_point(self.get_position(), ent.get_position())
+                    cur_dist = coord.calc_distance_to_point(self.position, ent.position)
                     if cur_dist < distance:
                         distance = cur_dist
                         closest_target = ent
         return closest_target
 
-    def get_step_to_target(self, target: Entity):
-        vector_points = coord.get_points_of_vector(self.get_position(), target.get_position())
+    def get_step_to_target(self, target: entities.Entity):
+        vector_points = coord.get_points_of_vector(self.position, target.position)
         return vector_points[0]
 
     def make_move_to_nearest_target(self, target: type):
         closest_target = self.get_nearest_target(target)
         if closest_target:
             point_to_step = self.get_step_to_target(closest_target)
-            if self._model.get_entity(point_to_step) is None:
-                self.get_position().x = point_to_step.x
-                self.get_position().y = point_to_step.y
+            self.model.update_entity_position(self, point_to_step)
         else:
             self.make_random_move()
 
 
 class Vision:
-    def __init__(self, owner: Creature, distance=5):
+    def __init__(self, owner: Creature, distance=10):
         self.__owner = owner
         self.__distance = distance
         self.__solid_obj_types = entities.Entity
@@ -215,4 +176,4 @@ class Predator(Creature):
 
 class Herbivore(Creature):
     def __init__(self, position=None):
-        super().__init__(position, 'H')
+        super().__init__(position, '*')

@@ -10,21 +10,19 @@ class Position:
 class Entity(metaclass=ABCMeta):
     @abstractmethod
     def __init__(self, position=None, icon=None):
-        self._position = position
-        self._icon = icon
+        if isinstance(position, Position):
+            self.__position = position
+        else:
+            self.__position = Position()
+        self.__icon = icon
 
     @property
     def position(self):
-        return self._position
+        return self.__position
 
-    def set_position(self, position: Position):
-        self._position = position
-
-    def get_position(self):
-        return self._position
-
-    def get_icon(self):
-        return self._icon
+    @property
+    def icon(self):
+        return self.__icon
 
 
 class Rock(Entity):
@@ -34,9 +32,9 @@ class Rock(Entity):
 
 class Grass(Entity):
     def __init__(self, position=None):
-        super().__init__(position, icon='#')
+        super().__init__(position, icon='▓')
 
 
 class Tree(Entity):
     def __init__(self, position=None):
-        super().__init__(position, icon='T')
+        super().__init__(position, icon='█')

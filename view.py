@@ -11,7 +11,7 @@ class View:
         self._model = data_model
         self._controller = controller
         self._is_debug = is_debug
-        self._empty_box_icon = '_'
+        self._empty_box_icon = ' '
 
     def _render_map(self):
         frame = ""
@@ -24,7 +24,7 @@ class View:
                 if entity is None:
                     frame += self._empty_box_icon
                 else:
-                    frame += entity.get_icon()
+                    frame += entity.icon
             frame += '\n'
         if self._is_debug:
             frame += f"\nentities: {len(self._model.entities_on_grid.items())}"
