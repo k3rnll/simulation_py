@@ -135,7 +135,7 @@ class Creature(entities.Entity, IMovable):
 
 
 class Vision:
-    def __init__(self, owner: Creature, distance=10):
+    def __init__(self, owner: Creature, distance=5):
         self.__owner = owner
         self.__distance = distance
         self.__solid_obj_types = entities.Entity

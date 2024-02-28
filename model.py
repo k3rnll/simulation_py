@@ -17,6 +17,10 @@ class Model:
     def width(self):
         return self.__width
 
+    @property
+    def entities_dict(self):
+        return self.__entities
+
     def entities_on_grid(self, spec_type=entities.Entity):
         entities_list = []
         for obj in self.__entities.values():
@@ -59,10 +63,16 @@ class Model:
                 return self.__entities[point]
         return None
 
+    def is_able_to_stand_point(self, point: entities.Position):
+        obj = self.get_entity(point)
+        if (self.is_valid_point(point) and obj is None or
+                isinstance(obj, entities.Grass)):
+            return True
+        return False
+
     def update_entity_position(self, entity: entities.Entity, new_point: entities.Position):
         if (entity in self.__entities.values() and
-                self.is_valid_point(new_point) and
-                self.get_entity(new_point) is None):
+                self.is_able_to_stand_point(new_point)):
             entity.position.x = new_point.x
             entity.position.y = new_point.y
             return True

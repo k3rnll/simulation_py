@@ -7,7 +7,7 @@ import view
 class Controller:
     def __init__(self, predators=0, herbivores=0, trees=0, rocks=0):
         self._model = model.Model(30, 60)
-        self._view = view.View(self._model, self, True)
+        self._view = view.View(self._model, self, False)
         self._predators = predators
         self._herbivores = herbivores
         self._trees = trees
