@@ -15,6 +15,7 @@ class Controller:
         self._put_entities_on_map()
 
     def _put_entities_on_map(self):
+        # self._model.add_entity_manually(creatures.Predator(), entities.Position(5, 15))
         for i in range(self._predators):
             self._model.add_entity_randomly(creatures.Predator())
         for i in range(self._herbivores):
@@ -25,9 +26,9 @@ class Controller:
             self._model.add_entity_randomly(entities.Rock())
 
     def spin_the_world(self):
-        for entity in self._model.entities_on_grid():
-            if isinstance(entity, creatures.Predator):
-                entity.make_move_to_nearest_target(creatures.Herbivore)
-            if isinstance(entity, creatures.Herbivore):
-                entity.make_random_move()
+        # for entity in self._model.entities_on_grid():
+        #     if isinstance(entity, creatures.Predator):
+        #         entity.make_move_to_nearest_target(creatures.Herbivore)
+        #     if isinstance(entity, creatures.Herbivore):
+        #         entity.make_random_move()
         self._view.print_frame()

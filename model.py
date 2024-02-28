@@ -1,13 +1,63 @@
 import random
 import creatures
 import entities
+from entities import Position
+
+
+class Cell:
+    def __init__(self):
+        self.__items = set()
+
+    def add_item(self, item: entities.Entity):
+        if item:
+            self.items.add(item)
+
+    def clear_items(self):
+        self.__items.clear()
+
+    @property
+    def items(self):
+        return self.__items
+
+
+class Grid:
+    def __init__(self, width: int, height: int):
+        self.__width = width
+        self.__height = height
+        self.__cells = [Cell() for _ in range(width * height)]
+
+    def __is_point_in_grid_range(self, x, y):
+        return (x in range(0, self.__width) and
+                y in range(0, self.__height))
+
+    def get_cell_on(self, x: int, y: int):
+        if self.__is_point_in_grid_range(x, y):
+            return self.__cells[self.__width * y + x]
+        return None
+
+    @property
+    def cells(self):
+        return self.__cells
+
+    @property
+    def width(self):
+        return self.__width
+
+    @property
+    def height(self):
+        return self.__height
 
 
 class Model:
     def __init__(self, height: int, width: int):
+        self.__grid = Grid(width, height)
         self.__height = height
         self.__width = width
         self.__entities = {}
+
+    @property
+    def grid(self):
+        return self.__grid
 
     @property
     def height(self):
@@ -42,20 +92,15 @@ class Model:
         if issubclass(new_entity.__class__, creatures.Creature):
             new_entity.set_model(self)
 
-    def add_entity_manually(self, new_entity, position_to: entities.Position):
-        if self.is_valid_point(position_to) and self.get_entity(position_to) is None:
-            self.__put_entity_on_grid(new_entity, position_to)
-            return True
-        return False
+    def add_entity_manually(self, entity, position_to: Position):
+        cell = self.__grid.get_cell_on(position_to.x, position_to.y)
+        if cell:
+            cell.add_item(entity)
 
-    def add_entity_randomly(self, new_entity):
-        random_x = random.randrange(0, self.__width)
-        random_y = random.randrange(0, self.height)
-        random_position = entities.Position(random_x, random_y)
-        if self.get_entity(random_position) is None:
-            self.__put_entity_on_grid(new_entity, random_position)
-            return True
-        return False
+    def add_entity_randomly(self, entity):
+        random_x = random.randrange(0, self.grid.width)
+        random_y = random.randrange(0, self.grid.height)
+        self.add_entity_manually(entity, Position(random_x, random_y))
 
     def get_entity(self, position: entities.Position):
         for point in self.__entities.keys():
