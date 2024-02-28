@@ -176,9 +176,9 @@ class Vision:
 
 class Predator(Creature):
     def __init__(self, position=None):
-        super().__init__(position, 'P')
+        super().__init__(position, '\033[31m█\033[0m')
 
 
 class Herbivore(Creature):
     def __init__(self, position=None):
-        super().__init__(position, '*')
+        super().__init__(position, '\033[34m█\033[0m')

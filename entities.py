@@ -27,14 +27,14 @@ class Entity(metaclass=ABCMeta):
 
 class Rock(Entity):
     def __init__(self, position=None):
-        super().__init__(position, icon='^')
+        super().__init__(position, icon='\033[94m▄\033[0m')
 
 
 class Grass(Entity):
     def __init__(self, position=None):
-        super().__init__(position, icon='▓')
+        super().__init__(position, icon='\033[32m░\033[0m')
 
 
 class Tree(Entity):
     def __init__(self, position=None):
-        super().__init__(position, icon='█')
+        super().__init__(position, icon='\033[33m¶\033[0m')
