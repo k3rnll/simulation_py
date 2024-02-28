@@ -1,16 +1,19 @@
 import random
 import creatures
 import entities
-from entities import Position
 
 
 class Cell:
     def __init__(self):
-        self.__items = set()
+        self.__items = list()
 
     def add_item(self, item: entities.Entity):
         if item:
-            self.items.add(item)
+            self.items.append(item)
+
+    def remove_item(self, item: entities.Entity):
+        if item in self.__items:
+            self.__items.remove(item)
 
     def clear_items(self):
         self.__items.clear()
@@ -48,77 +51,63 @@ class Grid:
         return self.__height
 
 
+class CreaturesMover:
+    # ask all creatures to make move
+    def __init__(self, grid: Grid):
+        self.__grid = grid
+
+    def get_all_creatures(self):
+        creatures_list = list()
+        for cell in self.__grid.cells:
+            if cell:
+                for obj in cell.items:
+                    if creatures.Creature.is_creature(obj):
+                        creatures_list.append(obj)
+        return creatures_list
+
+    def move_all_creatures(self):
+        creatures_list = self.get_all_creatures()
+        for creature in creatures_list:
+            creature.make_random_move()
+
+
 class Model:
     def __init__(self, height: int, width: int):
         self.__grid = Grid(width, height)
-        self.__height = height
-        self.__width = width
-        self.__entities = {}
+        self.__mover = CreaturesMover(self.__grid)
 
     @property
     def grid(self):
         return self.__grid
 
-    @property
-    def height(self):
-        return self.__height
+    def move_all_creatures(self):
+        self.__mover.move_all_creatures()
 
-    @property
-    def width(self):
-        return self.__width
-
-    @property
-    def entities_dict(self):
-        return self.__entities
-
-    def entities_on_grid(self, spec_type=entities.Entity):
-        entities_list = []
-        for obj in self.__entities.values():
-            if isinstance(obj, spec_type):
-                entities_list.append(obj)
-        return entities_list
-
-    def is_valid_point(self, point: entities.Position):
-        return 0 <= point.x < self.__width and 0 <= point.y < self.height
-
-    @classmethod
-    def __update_entity_position(cls, entity: entities.Entity, new_point: entities.Position):
-        entity.position.x = new_point.x
-        entity.position.y = new_point.y
-
-    def __put_entity_on_grid(self, new_entity, position_to: entities.Position):
-        self.__update_entity_position(new_entity, position_to)
-        self.__entities[new_entity.position] = new_entity
-        if issubclass(new_entity.__class__, creatures.Creature):
-            new_entity.set_model(self)
-
-    def add_entity_manually(self, entity, position_to: Position):
+    def add_entity_manually(self, entity, position_to: entities.Position):
         cell = self.__grid.get_cell_on(position_to.x, position_to.y)
         if cell:
             cell.add_item(entity)
+            entity.position.x = position_to.x
+            entity.position.y = position_to.y
+            if creatures.Creature.is_creature(entity):
+                entity.set_model(self)
+            return True
+        return False
 
     def add_entity_randomly(self, entity):
         random_x = random.randrange(0, self.grid.width)
         random_y = random.randrange(0, self.grid.height)
-        self.add_entity_manually(entity, Position(random_x, random_y))
+        self.add_entity_manually(entity, entities.Position(random_x, random_y))
 
-    def get_entity(self, position: entities.Position):
-        for point in self.__entities.keys():
-            if point.x == position.x and point.y == position.y:
-                return self.__entities[point]
-        return None
+    def remove_entity(self, entity: entities.Entity, position: entities.Position):
+        cell = self.__grid.get_cell_on(position.x, position.y)
+        if cell:
+            cell.remove_item(entity)
 
-    def is_able_to_stand_point(self, point: entities.Position):
-        obj = self.get_entity(point)
-        if (self.is_valid_point(point) and obj is None or
-                isinstance(obj, entities.Grass)):
-            return True
-        return False
+    def change_entity_position(self, entity: entities.Entity, new_position: entities.Position):
+        old_position = entities.Position(entity.position.x, entity.position.y)
+        if self.add_entity_manually(entity, new_position):
+            self.remove_entity(entity, old_position)
 
-    def update_entity_position(self, entity: entities.Entity, new_point: entities.Position):
-        if (entity in self.__entities.values() and
-                self.is_able_to_stand_point(new_point)):
-            entity.position.x = new_point.x
-            entity.position.y = new_point.y
-            return True
-        return False
+
+

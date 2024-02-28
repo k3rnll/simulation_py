@@ -42,31 +42,39 @@ class Creature(entities.Entity, IMovable):
     def __init__(self, position=None, icon=None):
         super().__init__(position, icon)
         self._hp = 100
-        self._model = None
+        self.__model = None
         self.vision = Vision(self)
 
     @property
     def model(self):
-        return self._model
+        return self.__model
 
     def set_model(self, to_model):
-        self._model = to_model
+        self.__model = to_model
+
+    @classmethod
+    def is_creature(cls, obj):
+        return isinstance(obj, Creature)
 
     def _move_up(self):
-        new_point = entities.Position(self.position.x, self.position.y - 1)
-        self.model.update_entity_position(self, new_point)
+        if self.model:
+            new_point = entities.Position(self.position.x, self.position.y - 1)
+            self.model.change_entity_position(self, new_point)
 
     def _move_down(self):
-        new_point = entities.Position(self.position.x, self.position.y + 1)
-        self.model.update_entity_position(self, new_point)
+        if self.model:
+            new_point = entities.Position(self.position.x, self.position.y + 1)
+            self.model.change_entity_position(self, new_point)
 
     def _move_left(self):
-        new_point = entities.Position(self.position.x - 1, self.position.y)
-        self.model.update_entity_position(self, new_point)
+        if self.model:
+            new_point = entities.Position(self.position.x - 1, self.position.y)
+            self.model.change_entity_position(self, new_point)
 
     def _move_right(self):
-        new_point = entities.Position(self.position.x + 1, self.position.y)
-        self.model.update_entity_position(self, new_point)
+        if self.model:
+            new_point = entities.Position(self.position.x + 1, self.position.y)
+            self.model.change_entity_position(self, new_point)
 
     def _move_up_right(self):
         self._move_up()
