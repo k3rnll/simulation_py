@@ -7,7 +7,7 @@ import view
 class Controller:
     def __init__(self, predators=0, herbivores=0, trees=0, rocks=0):
         self.__model = model.Model(50, 100)
-        self.__view = view.View(self.__model, self, False)
+        self.__view = view.View(self.__model, self, True)
         self.__predators = predators
         self.__herbivores = herbivores
         self.__trees = trees
@@ -30,6 +30,6 @@ class Controller:
             self.__model.add_entity_randomly(entities.Rock())
 
     def spin_the_world(self):
-        # self.__add_grass(1)
+        self.__add_grass(100)
         self.__model.move_all_creatures()
         self.__view.print_frame()

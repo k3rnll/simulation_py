@@ -59,16 +59,15 @@ class CreaturesMover:
     def get_all_creatures(self):
         creatures_list = list()
         for cell in self.__grid.cells:
-            if cell:
-                for obj in cell.items:
-                    if creatures.Creature.is_creature(obj):
-                        creatures_list.append(obj)
+            for obj in cell.items:
+                if creatures.Creature.is_creature(obj):
+                    creatures_list.append(obj)
         return creatures_list
 
     def move_all_creatures(self):
         creatures_list = self.get_all_creatures()
         for creature in creatures_list:
-            creature.make_random_move()
+            creature.move()
 
 
 class StandRules:

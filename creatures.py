@@ -116,7 +116,7 @@ class Creature(entities.Entity, IMovable):
         x = random.randrange(0, len(commands))
         self.make_move(commands[x])
 
-    def get_nearest_target(self, target: type):
+    def get_nearest_target(self, target: type) -> entities.Entity:
         entities_in_sight = self.vision.entities_in_sight
         closest_target = None
         if entities_in_sight:
@@ -137,7 +137,7 @@ class Creature(entities.Entity, IMovable):
         closest_target = self.get_nearest_target(target)
         if closest_target:
             point_to_step = self.get_step_to_target(closest_target)
-            self.model.update_entity_position(self, point_to_step)
+            self.model.change_entity_position(self, point_to_step)
         else:
             self.make_random_move()
 
@@ -166,11 +166,12 @@ class Vision:
     def __get_objs_on_view_vector(self, vector):
         seen_objs = set()
         for point in vector:
-            obj = self.__owner.model.get_entity(point)
-            if obj:
-                seen_objs.add(obj)
-            if isinstance(obj, self.__solid_obj_types):
-                return seen_objs
+            cell = self.__owner.model.grid.get_cell_on(point.x, point.y)
+            if cell:
+                for obj in cell.items:
+                    seen_objs.add(obj)
+                    if isinstance(obj, self.__solid_obj_types):
+                        return seen_objs
         return seen_objs
 
 
@@ -178,7 +179,14 @@ class Predator(Creature):
     def __init__(self, position=None):
         super().__init__(position, '\033[31m█\033[0m')
 
+    def move(self):
+        super().make_move_to_nearest_target(Herbivore)
+
 
 class Herbivore(Creature):
     def __init__(self, position=None):
         super().__init__(position, '\033[34m█\033[0m')
+
+    def move(self):
+        super().make_random_move()
+        # super().make_move_to_nearest_target(entities.Grass)
