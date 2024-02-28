@@ -71,10 +71,26 @@ class CreaturesMover:
             creature.make_random_move()
 
 
+class StandRules:
+    def __init__(self, grid: Grid):
+        self.__grid = grid
+        self.__can_stand_on_types = entities.Grass
+        self.__cant_stand_on_types = \
+            (entities.Rock, entities.Tree,
+            creatures.Herbivore, creatures.Predator)
+
+    def is_cell_standable(self, cell: Cell):
+        for obj in cell.items:
+            if isinstance(obj, self.__cant_stand_on_types):
+                return False
+        return True
+
+
 class Model:
     def __init__(self, height: int, width: int):
         self.__grid = Grid(width, height)
         self.__mover = CreaturesMover(self.__grid)
+        self.__stand_rules = StandRules(self.__grid)
 
     @property
     def grid(self):
@@ -85,7 +101,7 @@ class Model:
 
     def add_entity_manually(self, entity, position_to: entities.Position):
         cell = self.__grid.get_cell_on(position_to.x, position_to.y)
-        if cell:
+        if cell and self.__stand_rules.is_cell_standable(cell):
             cell.add_item(entity)
             entity.position.x = position_to.x
             entity.position.y = position_to.y
