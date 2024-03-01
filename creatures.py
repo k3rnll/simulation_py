@@ -62,6 +62,10 @@ class Creature(entities.Entity, IMovable):
             return 'X'
         return super().icon
 
+    @property
+    def is_dead(self):
+        return self._hp <= 0
+
     def _move_up(self):
         if self.model:
             new_point = entities.Position(self.position.x, self.position.y - 1)
