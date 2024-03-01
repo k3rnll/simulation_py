@@ -70,26 +70,32 @@ class CreaturesMover:
             creature.move()
 
 
-class StandRules:
+class CellRules:
     def __init__(self, grid: Grid):
         self.__grid = grid
         self.__can_stand_on_types = entities.Grass
         self.__cant_stand_on_types = \
             (entities.Rock, entities.Tree,
-            creatures.Herbivore, creatures.Predator)
+             creatures.Herbivore, creatures.Predator)
+
+    def is_cell_have_obj_type(self, cell: Cell, obj_type: type | tuple):
+        for obj in cell.items:
+            if isinstance(obj, obj_type):
+                return True
+        return False
+
+    def is_cell_have_grass(self, cell: Cell):
+        return self.is_cell_have_obj_type(cell, entities.Grass)
 
     def is_cell_standable(self, cell: Cell):
-        for obj in cell.items:
-            if isinstance(obj, self.__cant_stand_on_types):
-                return False
-        return True
+        return not self.is_cell_have_obj_type(cell, self.__cant_stand_on_types)
 
 
 class Model:
     def __init__(self, height: int, width: int):
         self.__grid = Grid(width, height)
         self.__mover = CreaturesMover(self.__grid)
-        self.__stand_rules = StandRules(self.__grid)
+        self.__stand_rules = CellRules(self.__grid)
 
     @property
     def grid(self):
