@@ -34,10 +34,9 @@ class View:
         return frame
 
     def __make_frame(self):
-        frame = self.__grid_render()
         if self.__is_fps:
-            frame += self.__fps_info()
-        return frame
+            return self.__grid_render() + self.__fps_info()
+        return self.__grid_render()
 
     def print_frame(self):
         print(_get_clear_display_str(), self.__make_frame(), sep='')
