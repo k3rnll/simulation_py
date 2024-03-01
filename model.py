@@ -106,7 +106,11 @@ class Model:
 
     def add_entity_manually(self, entity, position_to: entities.Position):
         cell = self.__grid.get_cell_on(position_to.x, position_to.y)
-        if cell and self.__stand_rules.is_cell_standable(cell):
+        if not cell:
+            return False
+        if self.__stand_rules.is_cell_have_obj_type(cell, entity.__class__):
+            return False
+        if self.__stand_rules.is_cell_standable(cell):
             cell.add_item(entity)
             entity.position.x = position_to.x
             entity.position.y = position_to.y
