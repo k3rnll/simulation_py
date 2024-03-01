@@ -191,7 +191,8 @@ class Predator(Creature):
         self.__hunger_hp = 5
 
     def move(self):
-        super().make_move_to_nearest_target(Herbivore)
+        if self._hp > 0:
+            super().make_move_to_nearest_target(Herbivore)
 
     def hit_by_hunger(self):
         self.change_hp(-self.__hunger_hp)
@@ -203,8 +204,9 @@ class Herbivore(Creature):
         self.__hunger_hp = 5
 
     def move(self):
-        super().make_random_move()
-        # super().make_move_to_nearest_target(entities.Grass)
+        if self._hp > 0:
+            super().make_random_move()
+            # super().make_move_to_nearest_target(entities.Grass)
 
     def hit_by_hunger(self):
         self.change_hp(-self.__hunger_hp)
