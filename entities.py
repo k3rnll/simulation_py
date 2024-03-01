@@ -14,7 +14,7 @@ class Entity(metaclass=ABCMeta):
             self.__position = position
         else:
             self.__position = Position()
-        self.__icon = icon
+        self._icon = icon
 
     @property
     def position(self):
@@ -22,7 +22,7 @@ class Entity(metaclass=ABCMeta):
 
     @property
     def icon(self):
-        return self.__icon
+        return self._icon
 
 
 class Rock(Entity):

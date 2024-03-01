@@ -69,7 +69,9 @@ class CreaturesHandler:
             creature.move()
 
     def hit_creatures_by_hunger(self):
-        pass
+        self.__update_creatures_list()
+        for creature in self.__creatures_list:
+            creature.hit_by_hunger()
 
 
 class CellRules:

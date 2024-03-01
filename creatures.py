@@ -56,6 +56,12 @@ class Creature(entities.Entity, IMovable):
     def is_creature(cls, obj):
         return isinstance(obj, Creature)
 
+    @property
+    def icon(self):
+        if self._hp <= 0:
+            return 'X'
+        return super().icon
+
     def _move_up(self):
         if self.model:
             new_point = entities.Position(self.position.x, self.position.y - 1)
@@ -141,6 +147,10 @@ class Creature(entities.Entity, IMovable):
         else:
             self.make_random_move()
 
+    def change_hp(self, amount: int):
+        if 0 < self._hp <= 100:
+            self._hp += amount
+
 
 class Vision:
     def __init__(self, owner: Creature, distance=5):
@@ -178,15 +188,23 @@ class Vision:
 class Predator(Creature):
     def __init__(self, position=None):
         super().__init__(position, '\033[31m█\033[0m')
+        self.__hunger_hp = 5
 
     def move(self):
         super().make_move_to_nearest_target(Herbivore)
+
+    def hit_by_hunger(self):
+        self.change_hp(-self.__hunger_hp)
 
 
 class Herbivore(Creature):
     def __init__(self, position=None):
         super().__init__(position, '\033[34m█\033[0m')
+        self.__hunger_hp = 5
 
     def move(self):
         super().make_random_move()
         # super().make_move_to_nearest_target(entities.Grass)
+
+    def hit_by_hunger(self):
+        self.change_hp(-self.__hunger_hp)

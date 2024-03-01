@@ -30,6 +30,7 @@ class Controller:
             self.__model.add_entity_randomly(entities.Rock())
 
     def spin_the_world(self):
-        self.__add_grass(100)
-        self.__model.move_all_creatures()
+        # self.__add_grass(100)
+        self.__model.creatures_handler.move_all_creatures()
+        self.__model.creatures_handler.hit_creatures_by_hunger()
         self.__view.print_frame()
