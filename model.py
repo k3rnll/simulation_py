@@ -51,23 +51,25 @@ class Grid:
         return self.__height
 
 
-class CreaturesMover:
-    # ask all creatures to make move
+class CreaturesHandler:
     def __init__(self, grid: Grid):
         self.__grid = grid
+        self.__creatures_list = list()
 
-    def get_all_creatures(self):
-        creatures_list = list()
+    def __update_creatures_list(self):
+        self.__creatures_list.clear()
         for cell in self.__grid.cells:
             for obj in cell.items:
                 if creatures.Creature.is_creature(obj):
-                    creatures_list.append(obj)
-        return creatures_list
+                    self.__creatures_list.append(obj)
 
     def move_all_creatures(self):
-        creatures_list = self.get_all_creatures()
-        for creature in creatures_list:
+        self.__update_creatures_list()
+        for creature in self.__creatures_list:
             creature.move()
+
+    def hit_creatures_by_hunger(self):
+        pass
 
 
 class CellRules:
@@ -94,15 +96,16 @@ class CellRules:
 class Model:
     def __init__(self, height: int, width: int):
         self.__grid = Grid(width, height)
-        self.__mover = CreaturesMover(self.__grid)
+        self.__creatures_handler = CreaturesHandler(self.__grid)
         self.__stand_rules = CellRules(self.__grid)
 
     @property
     def grid(self):
         return self.__grid
 
-    def move_all_creatures(self):
-        self.__mover.move_all_creatures()
+    @property
+    def creatures_handler(self):
+        return self.__creatures_handler
 
     def add_entity_manually(self, entity, position_to: entities.Position):
         cell = self.__grid.get_cell_on(position_to.x, position_to.y)
