@@ -80,24 +80,28 @@ class CreaturesHandler:
                     cell.remove_item(obj)
 
 
-class CellRules:
+class CellContentRules:
     def __init__(self, grid: Grid):
         self.__grid = grid
         self.__can_stand_on_types = entities.Grass
-        self.__cant_stand_on_types = \
-            (entities.Rock, entities.Tree,
-             creatures.Herbivore, creatures.Predator)
+        self.__cant_stand_on_types = (
+            entities.Rock,
+            entities.Tree,
+            creatures.Herbivore,
+            creatures.Predator,
+        )
 
-    def is_cell_have_obj_type(self, cell: Cell, obj_type: type | tuple):
+    @staticmethod
+    def is_cell_have_obj_type(cell: Cell, obj_type: type | tuple[type, ...]) -> bool:
         for obj in cell.items:
             if isinstance(obj, obj_type):
                 return True
         return False
 
-    def is_cell_have_grass(self, cell: Cell):
+    def is_cell_have_grass(self, cell: Cell) -> bool:
         return self.is_cell_have_obj_type(cell, entities.Grass)
 
-    def is_cell_standable(self, cell: Cell):
+    def is_cell_standable(self, cell: Cell) -> bool:
         return not self.is_cell_have_obj_type(cell, self.__cant_stand_on_types)
 
 
@@ -105,7 +109,7 @@ class Model:
     def __init__(self, height: int, width: int):
         self.__grid = Grid(width, height)
         self.__creatures_handler = CreaturesHandler(self.__grid)
-        self.__stand_rules = CellRules(self.__grid)
+        self.__cell_content_rules = CellContentRules(self.__grid)
 
     @property
     def grid(self):
@@ -119,9 +123,9 @@ class Model:
         cell = self.__grid.get_cell_on(position_to.x, position_to.y)
         if not cell:
             return False
-        if self.__stand_rules.is_cell_have_obj_type(cell, entity.__class__):
+        if self.__cell_content_rules.is_cell_have_obj_type(cell, entity.__class__):
             return False
-        if self.__stand_rules.is_cell_standable(cell):
+        if self.__cell_content_rules.is_cell_standable(cell):
             cell.add_item(entity)
             entity.position.x = position_to.x
             entity.position.y = position_to.y
