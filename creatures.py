@@ -155,6 +155,10 @@ class Creature(entities.Entity, IMovable):
         if 0 < self._hp <= 100:
             self._hp += amount
 
+    @abstractmethod
+    def eat(self):
+        pass
+
 
 class Vision:
     def __init__(self, owner: Creature, distance=5):
@@ -194,6 +198,9 @@ class Predator(Creature):
         super().__init__(position, '\033[31m█\033[0m')
         self.__hunger_hp = 5
 
+    def eat(self):
+        pass
+
     def move(self):
         if self._hp > 0:
             super().make_move_to_nearest_target(Herbivore)
@@ -205,12 +212,20 @@ class Predator(Creature):
 class Herbivore(Creature):
     def __init__(self, position=None):
         super().__init__(position, '\033[34m█\033[0m')
-        self.__hunger_hp = 5
+        self.__hunger_hp = 1
+        self.__grass_hp = 5
+
+    def eat(self):
+        cell = self.model.grid.get_cell_on(self.position.x, self.position.y)
+        for obj in cell.items:
+            if isinstance(obj, entities.Grass):
+                cell.remove_item(obj)
+                self.change_hp(self.__grass_hp)
+                break
 
     def move(self):
         if self._hp > 0:
-            super().make_random_move()
-            # super().make_move_to_nearest_target(entities.Grass)
+            super().make_move_to_nearest_target(entities.Grass)
 
     def hit_by_hunger(self):
         self.change_hp(-self.__hunger_hp)
