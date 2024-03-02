@@ -73,6 +73,11 @@ class CreaturesHandler:
         for creature in self.__creatures_list:
             creature.hit_by_hunger()
 
+    def ask_all_to_eat(self):
+        self.__update_creatures_list()
+        for creature in self.__creatures_list:
+            creature.eat()
+
     def remove_corps(self):
         for cell in self.__grid.cells:
             for obj in cell.items:
