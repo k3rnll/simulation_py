@@ -198,10 +198,19 @@ class Vision:
 class Predator(Creature):
     def __init__(self, position=None):
         super().__init__(position, '\033[31m█\033[0m')
-        self.__hunger_hp = 5
+        self.__hunger_hp = 1
+        self.__eat_hp = 5
 
     def eat(self):
-        pass
+        points_around = coord.get_points_list_of_borderline(self.position, 1)
+        for point in points_around:
+            cell = self.model.grid.get_cell_on(point.x, point.y)
+            if cell:
+                for obj in cell.items:
+                    if isinstance(obj, Herbivore) and Herbivore(obj)._hp > 0:
+                        self.change_hp(self.__eat_hp)
+                        Herbivore(obj).hit_by_bite(self.__eat_hp)
+                        break
 
     def move(self):
         if self._hp > 0:
@@ -231,3 +240,6 @@ class Herbivore(Creature):
 
     def hit_by_hunger(self):
         self.change_hp(-self.__hunger_hp)
+
+    def hit_by_bite(self, amount: int):
+        self.change_hp(-amount)
