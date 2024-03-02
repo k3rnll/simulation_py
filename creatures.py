@@ -154,6 +154,8 @@ class Creature(entities.Entity, IMovable):
     def change_hp(self, amount: int):
         if 0 < self._hp <= 100:
             self._hp += amount
+            self._hp = 100 if self._hp > 100 else self._hp
+            self._hp = 0 if self._hp < 0 else self._hp
 
     @abstractmethod
     def eat(self):
