@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+import model
 import entities
 import random
 import coord
@@ -46,24 +47,24 @@ class Creature(entities.Entity, IMovable):
         self.vision = Vision(self)
 
     @property
-    def model(self):
+    def model(self) -> model.Model | None:
         return self.__model
 
     def set_model(self, to_model):
         self.__model = to_model
 
     @classmethod
-    def is_creature(cls, obj):
+    def is_creature(cls, obj) -> bool:
         return isinstance(obj, Creature)
 
     @property
-    def icon(self):
+    def icon(self) -> str:
         if self._hp <= 0:
             return 'X'
         return super().icon
 
     @property
-    def is_dead(self):
+    def is_dead(self) -> bool:
         return self._hp <= 0
 
     def _move_up(self):
@@ -130,7 +131,7 @@ class Creature(entities.Entity, IMovable):
     def entities_in_sight(self) -> set:
         return self.vision.entities_in_sight
 
-    def get_next_point_to_target(self, target: entities.Entity):
+    def get_next_point_to_target(self, target: entities.Entity) -> entities.Position:
         return coord.get_points_of_vector(self.position, target.position)[0]
 
     def change_hp(self, amount: int):
@@ -152,7 +153,7 @@ class Vision:
         self.__entities_in_sight = set()
 
     @property
-    def entities_in_sight(self):
+    def entities_in_sight(self) -> set:
         if self.__owner.model:
             self.__look_around()
         return self.__entities_in_sight
