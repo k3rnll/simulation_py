@@ -3,10 +3,15 @@ import controller
 
 
 def main():
-    simulation = controller.Controller(50, 100, 60, 5)
-    while 1:
-        simulation.spin_the_world()
-        # time.sleep(0.1)
+    fps_max = 15
+    time_between_frames_ns = 1000000000 / fps_max
+    last_call_time = 0
+    simulation = controller.Controller(100, 100, 60, 30)
+    while True:
+        current_time = time.time_ns()
+        if current_time - last_call_time > time_between_frames_ns:
+            last_call_time = current_time
+            simulation.spin_the_world()
 
 
 if __name__ == "__main__":
