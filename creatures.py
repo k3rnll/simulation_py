@@ -233,10 +233,26 @@ class Herbivore(Creature):
                 self.change_hp(self.__grass_hp)
                 break
 
+    def __choose_nearest_target(self, entities_set: set):
+        distance_to_target = self.model.grid.height + self.model.grid.width
+        chosen_entity = None
+        for entity in entities_set:
+            if isinstance(entity, entities.Grass):
+                cur_dist = coord.calc_distance_to_point(self.position, entity.position)
+                if cur_dist < distance_to_target:
+                    distance_to_target = cur_dist
+                    chosen_entity = entity
+        return chosen_entity
+
     def move(self):
-        if self._hp > 0:
-            pass
-            # super().make_move_to_nearest_target(entities.Grass)
+        if self._hp <= 0:
+            return
+        target = self.__choose_nearest_target(self.entities_in_sight)
+        if not target:
+            self.make_random_move()
+            return
+        next_point = self.get_next_point_to_target(target)
+        self.model.change_entity_position(self, next_point)
 
     def hit_by_hunger(self):
         self.change_hp(-self.__hunger_hp)
