@@ -3,28 +3,32 @@
 - predators hunt for herbivores<br>
 - herbivores eat grass
 
-
 ### Project structure:
 - MVC
 - model is a central part, has grid data structure and handles to manipulate it
-- creatures is data objects that use model to understand their position and make decisions
+- creatures are data objects that use model to understand their position and make decisions
 - controller adds entities to model and asks creatures to move
 - view gets data from model, search grid cells for object, makes frame, prints
 
 ### Now implemented:
-- herbivores move randomly
-- predators have vector vision, looking for herbivores
+- creatures have vector vision, looking for target
 - vision can't see after solid objects
-- predators choose nearest target
-- predators move to target by vector
+- creatures choose nearest target
+- creatures move to target by vector
+- creatures move randomly when don't see target
+- predators can bite nearest herbivore
+- predators rise their hp from subtract hp from herbivore
+- herbivores can eat grass if they stay on it (rise hp)
+- every frame creatures receive damage from hunger
+- creatures have 100hp and die if 0hp
 
 ### Run:
 - python main.py
-- runs without time pause, hits 30fps
-- for slow cpus add time pause in cycle in main.py
+- in main.py can input fpx_max limit
 
 ### TODO:
+- lay time for each dead body
+- creature structure to store whole simulation parameters
 - read parameters from file
-- hunger for creatures
-- death logic
-- creatures bite nearest targets
+- change grass addition from static amount to percent of grid size
+- ? read whole grid from file
