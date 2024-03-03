@@ -1,22 +1,22 @@
-import entities
+from entities import Position
 
 
-def get_points_list_of_borderline(center_point: entities.Position, distance: int):
+def get_points_list_of_borderline(center_point: Position, distance: int) -> list[Position]:
     if distance <= 0:
         return []
     x_from = center_point.x
     y_from = center_point.y
     border_points = []
     for x in range(distance * -1, distance + 1):
-        border_points.append(entities.Position(x_from + x, y_from + distance * -1))
-        border_points.append(entities.Position(x_from + x, y_from + distance))
+        border_points.append(Position(x_from + x, y_from + distance * -1))
+        border_points.append(Position(x_from + x, y_from + distance))
     for y in range(distance * -1 + 1, distance):
-        border_points.append(entities.Position(x_from + distance * -1, y_from + y))
-        border_points.append(entities.Position(x_from + distance, y_from + y))
+        border_points.append(Position(x_from + distance * -1, y_from + y))
+        border_points.append(Position(x_from + distance, y_from + y))
     return border_points
 
 
-def get_points_of_vector(from_point: entities.Position, to_point: entities.Position):
+def get_points_of_vector(from_point: Position, to_point: Position) -> list[Position]:
     vector_points_list = []
     x1 = from_point.x
     y1 = from_point.y
@@ -39,11 +39,11 @@ def get_points_of_vector(from_point: entities.Position, to_point: entities.Posit
         if err_5 <= dist_x:
             error += dist_x
             p_y += shift_y
-        vector_points_list.append(entities.Position(p_x, p_y))
+        vector_points_list.append(Position(p_x, p_y))
     return vector_points_list
 
 
-def calc_distance_to_point(from_point: entities.Position, to_point: entities.Position):
+def calc_distance_to_point(from_point: Position, to_point: Position) -> float:
     x = abs(from_point.x - to_point.x)
     y = abs(from_point.y - to_point.y)
     return (x * x + y * y) ** 0.5
