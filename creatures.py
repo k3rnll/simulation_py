@@ -40,8 +40,8 @@ class IMovable(metaclass=ABCMeta):
 
 
 class Creature(entities.Entity, IMovable):
-    def __init__(self, position=None, icon=None):
-        super().__init__(position, icon)
+    def __init__(self, icon: str):
+        super().__init__(icon)
         self._hp = 100
         self.__model = None
         self.vision = Vision(self)
@@ -179,8 +179,8 @@ class Vision:
 
 
 class Predator(Creature):
-    def __init__(self, position=None):
-        super().__init__(position, '\033[31m█\033[0m')
+    def __init__(self):
+        super().__init__('\033[31m█\033[0m')
         self.__hunger_hp = 1
         self.__eat_hp = 5
 
@@ -221,8 +221,8 @@ class Predator(Creature):
 
 
 class Herbivore(Creature):
-    def __init__(self, position=None):
-        super().__init__(position, '\033[34m█\033[0m')
+    def __init__(self):
+        super().__init__('\033[34m█\033[0m')
         self.__hunger_hp = 1
         self.__grass_hp = 5
 
