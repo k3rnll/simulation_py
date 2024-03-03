@@ -12,6 +12,7 @@ class Controller:
         self.__herbivores = herbivores
         self.__trees = trees
         self.__rocks = rocks
+        self.__corps_lay_frames_num = 0
         self.__put_entities_on_map()
         self.__view.print_frame()
 
@@ -30,7 +31,13 @@ class Controller:
             self.__model.add_entity_randomly(entities.Rock())
 
     def spin_the_world(self):
-        # self.__add_grass(100)
+        self.__add_grass(100)
+        self.__corps_lay_frames_num += 1
+        if self.__corps_lay_frames_num > 200:
+            self.__corps_lay_frames_num = 0
+            self.__model.creatures_handler.remove_corps()
+
+        self.__model.creatures_handler.ask_all_to_eat()
         self.__model.creatures_handler.move_all_creatures()
         self.__model.creatures_handler.hit_creatures_by_hunger()
         self.__view.print_frame()
