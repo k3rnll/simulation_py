@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 import model
-from entities import Entity, Position, Grass
+from entities import Entity, Position, Grass, Rock, Tree
 import random
 import coord
 
@@ -134,10 +134,10 @@ class MovementHandle(IMovable):
 
 
 class Vision:
-    def __init__(self, owner: Creature, distance=10):
+    def __init__(self, owner: Creature, distance=5):
         self.__owner = owner
         self.__distance = distance
-        self.__solid_obj_types = Entity
+        self.__solid_obj_types = (Rock, Tree, Creature)
         self.__entities_in_sight = set()
 
     @property
