@@ -2,7 +2,6 @@ import entities
 
 
 def get_points_list_of_borderline(center_point: entities.Position, distance: int):
-    """ returns list of points of borderline on distance from center point"""
     if distance <= 0:
         return []
     x_from = center_point.x
@@ -23,6 +22,8 @@ def get_points_of_vector(from_point: entities.Position, to_point: entities.Posit
     y1 = from_point.y
     x2 = to_point.x
     y2 = to_point.y
+    if x1 == x2 and y1 == y2:
+        return [to_point]
     dist_x = abs(x2 - x1)
     dist_y = -abs(y2 - y1)
     shift_x = 1 if x1 < x2 else -1
