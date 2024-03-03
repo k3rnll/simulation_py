@@ -19,7 +19,7 @@ class Cell:
         self.__items.clear()
 
     @property
-    def items(self):
+    def items(self) -> list[entities.Entity]:
         return self.__items
 
 
@@ -33,21 +33,21 @@ class Grid:
         return (x in range(0, self.__width) and
                 y in range(0, self.__height))
 
-    def get_cell_on(self, x: int, y: int):
+    def get_cell_on(self, x: int, y: int) -> Cell | None:
         if self.__is_point_in_grid_range(x, y):
             return self.__cells[self.__width * y + x]
         return None
 
     @property
-    def cells(self):
+    def cells(self) -> list[Cell]:
         return self.__cells
 
     @property
-    def width(self):
+    def width(self) -> int:
         return self.__width
 
     @property
-    def height(self):
+    def height(self) -> int:
         return self.__height
 
 
@@ -117,14 +117,14 @@ class Model:
         self.__cell_content_rules = CellContentRules(self.__grid)
 
     @property
-    def grid(self):
+    def grid(self) -> Grid:
         return self.__grid
 
     @property
-    def creatures_handler(self):
+    def creatures_handler(self) -> CreaturesHandler:
         return self.__creatures_handler
 
-    def add_entity_manually(self, entity, position_to: entities.Position):
+    def add_entity_manually(self, entity, position_to: entities.Position) -> bool:
         cell = self.__grid.get_cell_on(position_to.x, position_to.y)
         if not cell:
             return False
@@ -153,6 +153,3 @@ class Model:
         old_position = entities.Position(entity.position.x, entity.position.y)
         if self.add_entity_manually(entity, new_position):
             self.remove_entity(entity, old_position)
-
-
-
