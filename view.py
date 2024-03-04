@@ -17,7 +17,7 @@ class View:
 
     def __fps_info(self):
         cur_time = time.time_ns()
-        fps_str = f"fps:\t{str(1000000000 // (cur_time - self.__last_call_time))}\n"
+        fps_str = f"fps:\t{str(1000000000 // (cur_time - self.__last_call_time))}"
         self.__last_call_time = cur_time
         return fps_str
 

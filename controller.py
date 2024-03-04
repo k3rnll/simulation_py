@@ -33,3 +33,6 @@ class Controller:
         self.__model.creatures_handler.move_all_creatures()
         self.__model.creatures_handler.hit_creatures_by_hunger()
         self.__view.print_frame()
+        if not self.__model.creatures_handler.alive_creatures_amount:
+            exit()
+

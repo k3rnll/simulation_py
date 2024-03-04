@@ -56,6 +56,14 @@ class CreaturesHandler:
         self.__grid = grid
         self.__creatures_list = list()
 
+    @property
+    def alive_creatures_amount(self) -> int:
+        amount = 0
+        for creature in self.__creatures_list:
+            if not creature.is_dead:
+                amount += 1
+        return amount
+
     def __update_creatures_list(self):
         self.__creatures_list.clear()
         for cell in self.__grid.cells:
