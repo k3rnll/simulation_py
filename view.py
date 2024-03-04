@@ -1,5 +1,6 @@
-import model
 import time
+from params import SimulationParams
+from model import Model
 
 
 def _get_clear_display_str():
@@ -7,10 +8,10 @@ def _get_clear_display_str():
 
 
 class View:
-    def __init__(self, data_model: model.Model, controller, is_show_fps=True):
+    def __init__(self, data_model: Model, controller):
         self.__model = data_model
         self._controller = controller
-        self.__is_show_fps = is_show_fps
+        self.__is_show_fps = SimulationParams.is_show_fps
         self.__empty_cell_icon = ' '
         self.__last_call_time = 0
 

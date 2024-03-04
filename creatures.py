@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
-import model
 from entities import Entity, Position, Grass, Rock, Tree
+from params import SimulationParams
 import random
 import coord
 
@@ -52,7 +52,7 @@ class Creature(Entity):
         pass
 
     @property
-    def model(self) -> model.Model | None:
+    def model(self):
         return self.__model
 
     def set_model(self, to_model):
@@ -138,9 +138,13 @@ class MovementHandle(IMovable):
 
 
 class Vision:
-    def __init__(self, owner: Creature, distance=5):
+    def __init__(self, owner: Creature):
         self.__owner = owner
-        self.__distance = distance
+        self.__distance = SimulationParams.creatures_default_vision_distance
+        if isinstance(owner, Herbivore):
+            self.__distance = SimulationParams.herbivore_vision_distance
+        if isinstance(owner, Predator):
+            self.__distance = SimulationParams.predator_vision_distance
         self.__solid_obj_types = (Rock, Tree, Creature)
         self.__entities_in_sight = set()
 
@@ -173,8 +177,8 @@ class Vision:
 class Predator(Creature):
     def __init__(self):
         super().__init__('\033[31m█\033[0m')
-        self.__hunger_hp = 1
-        self.__eat_hp = 5
+        self.__hunger_hp = SimulationParams.predator_hunger_hp
+        self.__eat_hp = SimulationParams.predator_eat_hp
 
     def eat(self):
         points_around = coord.get_points_list_of_borderline(self.position, 1)
@@ -214,8 +218,8 @@ class Predator(Creature):
 class Herbivore(Creature):
     def __init__(self):
         super().__init__('\033[34m█\033[0m')
-        self.__hunger_hp = 1
-        self.__grass_hp = 5
+        self.__hunger_hp = SimulationParams.herbivore_hunger_hp
+        self.__grass_hp = SimulationParams.herbivore_eat_hp
 
     def eat(self):
         cell = self.model.grid.get_cell_on(self.position.x, self.position.y)

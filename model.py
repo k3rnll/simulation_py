@@ -1,17 +1,17 @@
 import random
-import creatures
-import entities
+from creatures import Creature, Herbivore, Predator
+from entities import Position, Entity, Rock, Tree, Grass
 
 
 class Cell:
     def __init__(self):
         self.__items = list()
 
-    def add_item(self, item: entities.Entity):
+    def add_item(self, item: Entity):
         if item:
             self.items.append(item)
 
-    def remove_item(self, item: entities.Entity):
+    def remove_item(self, item: Entity):
         if item in self.__items:
             self.__items.remove(item)
 
@@ -19,7 +19,7 @@ class Cell:
         self.__items.clear()
 
     @property
-    def items(self) -> list[entities.Entity]:
+    def items(self) -> list[Entity]:
         return self.__items
 
 
@@ -60,7 +60,7 @@ class CreaturesHandler:
         self.__creatures_list.clear()
         for cell in self.__grid.cells:
             for obj in cell.items:
-                if isinstance(obj, creatures.Creature):
+                if isinstance(obj, Creature):
                     self.__creatures_list.append(obj)
 
     def move_all_creatures(self):
@@ -81,19 +81,19 @@ class CreaturesHandler:
     def remove_corps(self):
         for cell in self.__grid.cells:
             for obj in cell.items:
-                if isinstance(obj, creatures.Creature) and obj.is_dead:
+                if isinstance(obj, Creature) and obj.is_dead:
                     cell.remove_item(obj)
 
 
 class CellContentRules:
     def __init__(self, grid: Grid):
         self.__grid = grid
-        self.__can_stand_on_types = entities.Grass
+        self.__can_stand_on_types = Grass
         self.__cant_stand_on_types = (
-            entities.Rock,
-            entities.Tree,
-            creatures.Herbivore,
-            creatures.Predator,
+            Rock,
+            Tree,
+            Herbivore,
+            Predator,
         )
 
     @staticmethod
@@ -104,14 +104,14 @@ class CellContentRules:
         return False
 
     def is_cell_have_grass(self, cell: Cell) -> bool:
-        return self.is_cell_have_obj_type(cell, entities.Grass)
+        return self.is_cell_have_obj_type(cell, Grass)
 
     def is_cell_standable(self, cell: Cell) -> bool:
         return not self.is_cell_have_obj_type(cell, self.__cant_stand_on_types)
 
 
 class Model:
-    def __init__(self, height: int, width: int):
+    def __init__(self, width: int, height: int):
         self.__grid = Grid(width, height)
         self.__creatures_handler = CreaturesHandler(self.__grid)
         self.__cell_content_rules = CellContentRules(self.__grid)
@@ -124,7 +124,7 @@ class Model:
     def creatures_handler(self) -> CreaturesHandler:
         return self.__creatures_handler
 
-    def add_entity_manually(self, entity, position_to: entities.Position) -> bool:
+    def add_entity_manually(self, entity, position_to: Position) -> bool:
         cell = self.__grid.get_cell_on(position_to.x, position_to.y)
         if not cell:
             return False
@@ -134,7 +134,7 @@ class Model:
             cell.add_item(entity)
             entity.position.x = position_to.x
             entity.position.y = position_to.y
-            if isinstance(entity, creatures.Creature):
+            if isinstance(entity, Creature):
                 entity.set_model(self)
             return True
         return False
@@ -142,15 +142,15 @@ class Model:
     def add_entity_randomly(self, entity):
         random_x = random.randrange(0, self.grid.width)
         random_y = random.randrange(0, self.grid.height)
-        self.add_entity_manually(entity, entities.Position(random_x, random_y))
+        self.add_entity_manually(entity, Position(random_x, random_y))
 
-    def remove_entity(self, entity: entities.Entity, position: entities.Position):
+    def remove_entity(self, entity: Entity, position: Position):
         cell = self.__grid.get_cell_on(position.x, position.y)
         if cell:
             cell.remove_item(entity)
 
-    def change_entity_position(self, entity: entities.Entity, new_position: entities.Position) -> bool:
-        old_position = entities.Position(entity.position.x, entity.position.y)
+    def change_entity_position(self, entity: Entity, new_position: Position) -> bool:
+        old_position = Position(entity.position.x, entity.position.y)
         if self.add_entity_manually(entity, new_position):
             self.remove_entity(entity, old_position)
             return True

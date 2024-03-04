@@ -1,12 +1,12 @@
 import time
-import controller
+from params import SimulationParams
+from controller import Controller
 
 
 def main():
-    fps_max = 15
-    time_between_frames_ns = 1000000000 / fps_max
+    time_between_frames_ns = 1000000000 / SimulationParams.fps_max
     last_call_time = 0
-    simulation = controller.Controller(100, 100, 60, 30)
+    simulation = Controller()
     while True:
         current_time = time.time_ns()
         if current_time - last_call_time > time_between_frames_ns:
