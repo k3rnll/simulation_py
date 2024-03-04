@@ -2,7 +2,7 @@
 ### Goal:
 - predators hunt for herbivores<br>
 - herbivores eat grass
-
+![](https://github.com/k3rnll/simulation_py/blob/main/doc/view.gif)
 ### Project structure:
 - MVC
 - model is a central part, has grid data structure and handles to manipulate it
