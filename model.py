@@ -60,7 +60,7 @@ class CreaturesHandler:
         self.__creatures_list.clear()
         for cell in self.__grid.cells:
             for obj in cell.items:
-                if creatures.Creature.is_creature(obj):
+                if isinstance(obj, creatures.Creature):
                     self.__creatures_list.append(obj)
 
     def move_all_creatures(self):
@@ -81,7 +81,7 @@ class CreaturesHandler:
     def remove_corps(self):
         for cell in self.__grid.cells:
             for obj in cell.items:
-                if creatures.Creature.is_creature(obj) and obj.is_dead:
+                if isinstance(obj, creatures.Creature) and obj.is_dead:
                     cell.remove_item(obj)
 
 
@@ -134,7 +134,7 @@ class Model:
             cell.add_item(entity)
             entity.position.x = position_to.x
             entity.position.y = position_to.y
-            if creatures.Creature.is_creature(entity):
+            if isinstance(entity, creatures.Creature):
                 entity.set_model(self)
             return True
         return False
@@ -149,7 +149,9 @@ class Model:
         if cell:
             cell.remove_item(entity)
 
-    def change_entity_position(self, entity: entities.Entity, new_position: entities.Position):
+    def change_entity_position(self, entity: entities.Entity, new_position: entities.Position) -> bool:
         old_position = entities.Position(entity.position.x, entity.position.y)
         if self.add_entity_manually(entity, new_position):
             self.remove_entity(entity, old_position)
+            return True
+        return False
