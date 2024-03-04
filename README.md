@@ -2,6 +2,7 @@
 ### Goal:
 - predators hunt for herbivores<br>
 - herbivores eat grass
+
 ![](https://github.com/k3rnll/simulation_py/blob/main/doc/view.gif)
 ### Project structure:
 - MVC
