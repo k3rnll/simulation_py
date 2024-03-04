@@ -91,6 +91,10 @@ class Creature(Entity):
     def _get_next_point_to_target(self, target: Entity) -> Position:
         return coord.get_points_of_vector(self.position, target.position)[0]
 
+    def _move_to_target(self, target: Entity) -> bool:
+        next_point = self._get_next_point_to_target(target)
+        return self.model.change_entity_position(self, next_point)
+
 
 class MovementHandle(IMovable):
     def __init__(self, owner: Creature):
@@ -183,26 +187,25 @@ class Predator(Creature):
                         obj.hit_by_bite(self.__eat_hp)
                         break
 
-    def __choose_nearest_target(self, entities_set: set):
-        distance_to_target = self.model.grid.height + self.model.grid.width
+    def __choose_nearest_target(self):
+        min_distance = self.model.grid.height + self.model.grid.width
         chosen_entity = None
+        entities_set = self.entities_in_sight
         for entity in entities_set:
             if isinstance(entity, Herbivore) and not entity.is_dead:
                 cur_dist = coord.calc_distance_to_point(self.position, entity.position)
-                if cur_dist < distance_to_target:
-                    distance_to_target = cur_dist
+                if cur_dist < min_distance:
+                    min_distance = cur_dist
                     chosen_entity = entity
         return chosen_entity
 
     def move(self):
         if self._hp <= 0:
             return
-        target = self.__choose_nearest_target(self.entities_in_sight)
-        if not target:
+        if chosen := self.__choose_nearest_target():
+            self._move_to_target(chosen)
+        else:
             self.make_random_move()
-            return
-        next_point = self._get_next_point_to_target(target)
-        self.model.change_entity_position(self, next_point)
 
     def hit_by_hunger(self):
         self.change_hp_by(self.__hunger_hp * -1)
@@ -222,26 +225,25 @@ class Herbivore(Creature):
                 self.change_hp_by(self.__grass_hp)
                 break
 
-    def __choose_nearest_target(self, entities_set: set):
-        distance_to_target = self.model.grid.height + self.model.grid.width
+    def __choose_nearest_target(self):
+        min_distance = self.model.grid.height + self.model.grid.width
         chosen_entity = None
+        entities_set = self.entities_in_sight
         for entity in entities_set:
             if isinstance(entity, Grass):
                 cur_dist = coord.calc_distance_to_point(self.position, entity.position)
-                if cur_dist < distance_to_target:
-                    distance_to_target = cur_dist
+                if cur_dist < min_distance:
+                    min_distance = cur_dist
                     chosen_entity = entity
         return chosen_entity
 
     def move(self):
         if self._hp <= 0:
             return
-        target = self.__choose_nearest_target(self.entities_in_sight)
-        if not target:
+        if chosen := self.__choose_nearest_target():
+            self._move_to_target(chosen)
+        else:
             self.make_random_move()
-            return
-        next_point = self._get_next_point_to_target(target)
-        self.model.change_entity_position(self, next_point)
 
     def hit_by_hunger(self):
         self.change_hp_by(self.__hunger_hp * -1)
