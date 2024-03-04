@@ -86,12 +86,6 @@ class CreaturesHandler:
         for creature in self.__creatures_list:
             creature.eat()
 
-    def remove_corps(self):
-        for cell in self.__grid.cells:
-            for obj in cell.items:
-                if isinstance(obj, Creature) and obj.is_dead:
-                    cell.remove_item(obj)
-
 
 class CellContentRules:
     def __init__(self, grid: Grid):
