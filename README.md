@@ -23,12 +23,10 @@
 - creatures have 100hp and die if 0hp
 
 ### Run:
+- settings are in params.py
 - python main.py
-- in main.py can input fpx_max limit
 
 ### TODO:
-- lay time for each dead body
-- creature structure to store whole simulation parameters
 - read parameters from file
 - change grass addition from static amount to percent of grid size
 - ? read whole grid from file
