@@ -29,7 +29,8 @@ class Rock(Entity):
 
 class Grass(Entity):
     def __init__(self):
-        super().__init__(icon='░')
+        # super().__init__(icon='\033[90m░\033[0m')
+        super().__init__(icon='.')
 
 
 class Tree(Entity):
